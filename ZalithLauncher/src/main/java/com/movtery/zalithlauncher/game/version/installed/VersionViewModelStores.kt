@@ -18,6 +18,8 @@
 
 package com.movtery.zalithlauncher.game.version.installed
 
+import android.os.Handler
+import android.os.Looper
 import androidx.lifecycle.ViewModelStore
 
 /**
@@ -29,6 +31,7 @@ import androidx.lifecycle.ViewModelStore
  */
 object VersionViewModelStores {
     private val lock = Any()
+    private val mainHandler = Handler(Looper.getMainLooper())
     private val stores = HashMap<Version, ViewModelStore>()
 
     /** 各版本正被承载屏幕持有的计数，计数归零后才允许清理 */
@@ -56,6 +59,7 @@ object VersionViewModelStores {
         if (remaining <= 0) {
             holderCounts.remove(version)
             if (currentVersions.none { it === version }) {
+                //由承载屏幕的组合销毁触发，必然处于主线程，可直接清理
                 stores.remove(version)?.clear()
             }
         } else {
@@ -67,11 +71,15 @@ object VersionViewModelStores {
      * 清理所有已不在当前版本列表、且没有任何屏幕持有的 store
      */
     fun clearStale(currentVersions: Collection<Version>) = synchronized(lock) {
-        val stale = stores.keys.filter { key ->
+        val staleStores = stores.keys.filter { key ->
             key !in holderCounts && currentVersions.none { it === key }
+        }.mapNotNull { version ->
+            stores.remove(version)
         }
-        stale.forEach { version ->
-            stores.remove(version)?.clear()
+        if (staleStores.isNotEmpty()) {
+            mainHandler.post {
+                staleStores.forEach { it.clear() }
+            }
         }
     }
 }
