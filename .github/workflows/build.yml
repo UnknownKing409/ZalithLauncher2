@@ -19,9 +19,9 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
       - name: Build
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleRelease -Pandroid.injected.build.abi=arm64-v8a
       - name: Upload APK
         uses: actions/upload-artifact@v6
         with:
           name: app-release
-          path: '**/*.apk'
+          path: ZalithLauncher/build/outputs/apk/release/*.apk
