@@ -107,7 +107,9 @@ object GridEngine {
      * 纵向向下开门必定成功，仅在无法确定让位方向时结算失败。
      *
      * @param pointer 指针所在的单元格，用于为未锁定方向的被压卡片推导让位方向
-     * @param directions 卡片的让位方向锁定表，优先于 [pointer] 推导
+     * @param directions 卡片的让位方向锁定表，优先于 [pointer] 推导。
+     *   每个值必须是单位轴向量：(1,0)、(-1,0)、(0,1) 或 (0,-1)；
+     *   零向量、对角向量或模长不为 1 的向量一律视为非法，导致结算失败。
      * @return 被重新安置的卡片（id -> 新布局）；无法确定让位方向时返回 null
      */
     fun resolveDisplacements(
@@ -129,10 +131,11 @@ object GridEngine {
             val current = occupied.first { it.id == card.id }
             // 先行处理的链条可能已把该卡片带离 [moving]
             if (!current.intersects(moving)) continue
-            val direction = directions[current.id]
+            val rawDirection = directions[current.id]
                 ?: pointer?.let { displacementDirection(it, current) }
                 ?: return null
-            if (direction.x == 0 && direction.y == 0) return null
+            // 让位方向必须是单位轴向量，避免非单位向量导致链条步进语义错乱
+            val direction = unitAxis(rawDirection) ?: return null
             // 垂直轴候选朝向指针背离侧：指针压在轴的哪一侧，门就朝另一侧开
             val perpendicular = if (direction.x != 0) {
                 IntOffset(0, if (pointer != null && pointer.y > current.y + current.height / 2f) -1 else 1)
@@ -168,6 +171,16 @@ object GridEngine {
             IntOffset(0, if (dy > 0) -1 else 1)
         }
     }
+
+    /**
+     * 把 [vector] 规范化为单位轴向量，只接受四种基本方向：
+     * (1,0)、(-1,0)、(0,1)、(0,-1)。
+     *
+     * 零向量、对角向量（如 (1,1)）或模长不为 1 的向量（如 (2,0)、(0,-3)）
+     * 一律返回 null，由调用方决定如何处理非法输入。
+     */
+    internal fun unitAxis(vector: IntOffset): IntOffset? =
+        if (abs(vector.x) + abs(vector.y) == 1) vector else null
 
     /**
      * 链式滑动：把 [head] 沿 [direction]（单位轴向量）逐格推动，
