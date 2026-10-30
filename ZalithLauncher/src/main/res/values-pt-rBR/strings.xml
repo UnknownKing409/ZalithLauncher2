@@ -1420,7 +1420,6 @@
     <string name="control_editor_style_cabinet_conflict_overwrite">Sobrescrever existente</string>
     <string name="control_editor_style_cabinet_conflict_independent">Salvar como cópia separada</string>
     <string name="control_editor_style_cabinet_delete">Tem certeza de que deseja excluir o estilo salvo %s?</string>
-
     <string name="guide_editor_style_cabinet_title">Você também pode adicionar seus estilos favoritos à coleção de estilos compartilhada!</string>
     <string name="guide_editor_style_cabinet_text">A coleção de estilos é global: não importa qual layout de controle você esteja editando, os estilos dela estarão sempre aqui~</string>
     <string name="guide_editor_style_cabinet_note">Aqui você pode adicionar os estilos salvos ao layout de controle atual para usá-los~</string>
@@ -1464,4 +1463,8 @@
     <string name="settings_renderer_max_refresh_rate_summary">Solicita que a tela mude para a taxa de HZ mais alta compatível com a resolução atual, removendo o limite de FPS em alguns dispositivos</string>
     <string name="versions_config_renderer_reset_global">Redefinir para Global</string>
     <string name="versions_config_renderer_reset_global_message">O Launcher descartará a configuração desta versão para %s e redefinirá para usar a configuração global. Esta ação não pode ser desfeita.</string>
+    <string name="settings_control_mouse_block_touch_title">Bloquear entrada de toque do mouse virtual</string>
+    <string name="settings_control_mouse_block_touch_summary">Escolha se deseja bloquear o mouse virtual toques em metade da tela para evitar entrada acidental</string>
+    <string name="settings_control_mouse_block_touch_left">Bloquear Metade Esquerda</string>
+    <string name="settings_control_mouse_block_touch_right">Bloquear Metade Direita</string>
 </resources>

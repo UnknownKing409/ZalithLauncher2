@@ -25,7 +25,7 @@
     <string name="generic_disable">تعطيل</string>
     <string name="generic_open_link">الفتح في المتصفح</string>
     <string name="generic_cannot_empty">لا يمكن أن يكون المحتوى فارغًا!</string>
-    <string name="generic_input_invalid_character">أحرف غير صالحة في الاسم: \"%s\"</string>
+    <string name="generic_input_invalid_character">حرف غير صالح في الاسم: \"%s\"</string>
     <string name="generic_input_failed_to_number">لا يمكن تحليل الإدخال كرقم</string>
     <string name="generic_input_too_small">لا يمكن أن تكون القيمة أصغر من %s</string>
     <string name="generic_input_too_large">لا يمكن أن تكون القيمة أكبر من %s</string>
@@ -559,7 +559,6 @@
     <string name="control_editor_style_cabinet_conflict_overwrite">الكتابة فوق الموجود</string>
     <string name="control_editor_style_cabinet_conflict_independent">حفظ كنسخة مستقلة</string>
     <string name="control_editor_style_cabinet_delete">هل تريد بالتأكيد حذف النمط المضاف إلى المجموعة %s؟</string>
-
     <string name="guide_editor_style_cabinet_title">يمكنك أيضًا إضافة أنماطك المفضلة إلى مجموعة الأنماط المشتركة!</string>
     <string name="guide_editor_style_cabinet_text">مجموعة الأنماط عامة: مهما كان تخطيط التحكم الذي تحرره، سترى الأنماط الموجودة فيها~</string>
     <string name="guide_editor_style_cabinet_note">من هنا يمكنك إضافة الأنماط المفضلة إلى تخطيط التحكم الحالي لاستخدامها~</string>
@@ -590,4 +589,11 @@
     <string name="download_assets_id_not_found">لم يتم العثور على المشروع!</string>
     <string name="download_assets_id_unsupported">هذا المشروع غير مدعوم !</string>
     <string name="about_acknowledgements_modrinth_text">%s ينقل الإعدادات المسبقة لرسوم نموذج اللاعب المتحركة من Modrinth</string>
+    <string name="fm_name_conflict">الاسم متعارض مع مدخل موجود بالفعل</string>
+    <string name="fm_calculating">يتم المعالجة…</string>
+    <string name="fm_property_folders">مجلدات</string>
+    <string name="fm_property_files">ملفات</string>
+    <string name="fm_property_modified">تم تعديله</string>
+    <string name="fm_property_size">الحجم</string>
+    <string name="fm_property_type">النوع</string>
 </resources>
