@@ -1180,7 +1180,6 @@
     <string name="download_assets_id_not_found">Projeto não encontrado!</string>
     <string name="download_assets_id_unsupported">Projeto não suportado!</string>
     <string name="settings_launcher_color_theme_style">Estilo de paleta</string>
-    <string name="settings_renderer_env_title">Variável de ambiente: %s</string>
     <string name="settings_renderer_config_title">Configuração do Renderizador</string>
     <string name="control_editor_menu_new_widget_joystick">Adicionar Joystick</string>
     <string name="control_editor_edit_category_joystick_config">Configuração do Joystick</string>

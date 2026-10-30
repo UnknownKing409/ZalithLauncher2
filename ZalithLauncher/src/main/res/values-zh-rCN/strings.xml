@@ -912,7 +912,6 @@
     <string name="settings_renderer_global_renderer_title">全局渲染器</string>
     <string name="settings_renderer_global_renderer_summary">全局默认的渲染器，通过动态库转换层，确保游戏能在移动端运行</string>
     <string name="settings_renderer_global_vulkan_driver_title">Vulkan 驱动器</string>
-    <string name="settings_renderer_env_title">环境变量：%s</string>
     <string name="settings_renderer_config_title">渲染器配置</string>
     <string name="settings_renderer_config_reset_message">要将 %s 的所有设置恢复为默认值吗？</string>
     <string name="renderer_config_mg_count_launch_title">启动会话统计</string>

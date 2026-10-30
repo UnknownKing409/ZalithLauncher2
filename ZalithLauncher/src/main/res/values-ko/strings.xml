@@ -800,7 +800,6 @@
     <string name="settings_tab_info_about">정보</string>
     <string name="settings_renderer_global_renderer_title">전역 렌더러</string>
     <string name="settings_renderer_global_renderer_summary">기본 렌더러는 동적 라이브러리 변환 계층을 사용해, 모바일 기기에서 게임이 작동하도록 합니다</string>
-    <string name="settings_renderer_env_title">환경 변수: %s</string>
     <string name="settings_renderer_config_title">렌더러 설정</string>
     <string name="settings_renderer_from_plugins">플러그인 \'%s\'에서</string>
     <string name="settings_renderer_resolution_scale_title">해상도</string>

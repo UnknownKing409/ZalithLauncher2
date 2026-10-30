@@ -1730,8 +1730,6 @@
     <string name="settings_renderer_global_renderer_summary">The global default renderer uses a dynamic library translation layer to ensure the game runs smoothly on mobile devices</string>
     <!-- Settings item title in the Renderer tab to choose the Vulkan driver plugin -->
     <string name="settings_renderer_global_vulkan_driver_title">Vulkan Driver</string>
-    <!-- Heading of an environment variable entry in the renderer configuration dialog; %s is the variable name -->
-    <string name="settings_renderer_env_title">Environment Variable: %s</string>
     <!-- Title of the renderer configuration dialog in the Renderer settings tab; also its opening icon label -->
     <string name="settings_renderer_config_title">Renderer Configuration</string>
     <!-- Confirmation text for resetting all settings of one renderer; %s is the renderer name -->

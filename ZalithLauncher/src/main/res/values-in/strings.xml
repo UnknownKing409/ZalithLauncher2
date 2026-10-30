@@ -1181,7 +1181,6 @@
     <string name="download_assets_id_unsupported">Project tidak didukung!</string>
     <string name="settings_launcher_color_theme_style">Gaya Palet</string>
     <string name="settings_renderer_config_title">Konfigurasi Renderer</string>
-    <string name="settings_renderer_env_title">Variabel Lingkungan: %s</string>
     <string name="control_editor_menu_new_widget_joystick">Tambahkan Joystick</string>
     <string name="control_editor_edit_category_joystick_config">Konfigurasi Joystick</string>
     <string name="control_editor_edit_category_joystick_style">Gaya Joystick</string>

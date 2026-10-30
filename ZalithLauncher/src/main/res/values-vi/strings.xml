@@ -1180,7 +1180,6 @@
     <string name="vibrate_kind_tick">Chọn</string>
     <string name="festivals_new_year">Chúc mừng năm mới!</string>
     <string name="festivals_april_fools">Chúc mừng ngày Cá tháng Tư!</string>
-    <string name="settings_renderer_env_title">Biến môi trường: %s</string>
     <string name="settings_renderer_config_title">Cấu hình trình kết xuất đồ hoạ</string>
     <string name="control_editor_menu_new_widget_joystick">Thêm cần</string>
     <string name="control_editor_edit_category_joystick_config">Cấu hình cần</string>

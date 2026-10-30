@@ -818,7 +818,6 @@
     <string name="settings_renderer_global_renderer_title">全域渲染器</string>
     <string name="settings_renderer_global_renderer_summary">全域預設的渲染器，透過動態函式庫轉換層，確保遊戲能在行動裝置上執行</string>
     <string name="settings_renderer_global_vulkan_driver_title">Vulkan 驅動程式</string>
-    <string name="settings_renderer_env_title">環境變數：%s</string>
     <string name="settings_renderer_config_title">渲染器設定</string>
     <string name="settings_renderer_config_reset_message">要將 %s 的所有設定還原為預設值嗎？</string>
     <string name="renderer_config_mg_count_launch_title">啟動工作階段統計</string>
