@@ -36,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.entryProvider
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.components.InstallableItem
+import com.movtery.zalithlauncher.legal.AvailableAgreement
 import com.movtery.zalithlauncher.ui.base.BaseScreen
 import com.movtery.zalithlauncher.ui.components.AnimatedDirection
 import com.movtery.zalithlauncher.ui.components.animated
@@ -44,16 +45,19 @@ import com.movtery.zalithlauncher.ui.screens.NavStateHost
 import com.movtery.zalithlauncher.ui.screens.NestedNavDisplay
 import com.movtery.zalithlauncher.ui.screens.rememberTransitionSpec
 import com.movtery.zalithlauncher.viewmodel.SplashBackStackViewModel
+import kotlinx.coroutines.flow.StateFlow
 
 /**
  * @param startAllTask 开启全部的解压任务
  * @param onWelcomeFinished 完成欢迎页
+ * @param availableAgreement 完整的可用协议数据
  * @param unpackItems 解压任务列表
  */
 @Composable
 fun SplashScreen(
     startAllTask: () -> Unit,
     onWelcomeFinished: () -> Unit,
+    availableAgreement: StateFlow<AvailableAgreement?>,
     unpackItems: List<InstallableItem>,
     screenViewModel: SplashBackStackViewModel
 ) {
@@ -62,6 +66,7 @@ fun SplashScreen(
             modifier = Modifier.fillMaxSize(),
             startAllTask = startAllTask,
             onWelcomeFinished = onWelcomeFinished,
+            availableAgreement = availableAgreement,
             unpackItems = unpackItems,
             screenViewModel = screenViewModel
         )
@@ -73,6 +78,7 @@ private fun NavigationUI(
     modifier: Modifier = Modifier,
     startAllTask: () -> Unit,
     onWelcomeFinished: () -> Unit,
+    availableAgreement: StateFlow<AvailableAgreement?>,
     unpackItems: List<InstallableItem>,
     screenViewModel: SplashBackStackViewModel
 ) {
@@ -99,6 +105,7 @@ private fun NavigationUI(
                     WelcomeScreen(
                         modifier = Modifier.fillMaxSize(),
                         onFinished = onWelcomeFinished,
+                        availableAgreement = availableAgreement,
                         screenViewModel = screenViewModel
                     )
                 }

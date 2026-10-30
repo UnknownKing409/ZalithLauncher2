@@ -227,40 +227,16 @@
     <string name="welcome_screen_intro_primary">Welcome to %1$s, a third-party Minecraft: Java Edition launcher designed for Android devices.</string>
     <!-- Second introduction paragraph describing the PojavLauncher core -->
     <string name="welcome_screen_intro_core">Powered by PojavLauncher, it provides a modern game launch and management experience.</string>
-    <!-- Heading of the welcome screen user notice -->
-    <string name="welcome_screen_notice_title">User Notice</string>
-    <!-- Notice explaining free features and sponsor acknowledgements; %1$s is the launcher name -->
-    <string name="welcome_screen_notice_free">%1$s is free and open-source software. It has no paid feature unlocks or paid gameplay enhancements; only donation channels and a sponsor acknowledgements list are provided.</string>
-    <!-- Notice describing the launcher and third-party licenses; %1$s is the launcher name -->
-    <string name="welcome_screen_notice_license">%1$s is free software released under the GNU General Public License version 3 (GPL-3.0). Third-party components used by the software are governed by their respective licenses.</string>
-    <!-- Local data and authorized log upload notice; %1$s is the launcher name -->
-    <string name="welcome_screen_notice_local_data">Your data is stored only locally. %1$s itself does not collect any of your data or upload it to the cloud without your knowledge. The log upload feature uploads game logs to LogShare or MCLogs only with your knowledge and authorization.</string>
-    <!-- Third-party game and mod data upload notice; %1$s is the launcher name -->
-    <string name="welcome_screen_notice_third_party_data">Games or mods you run through %1$s may upload your data to third-party servers. The launcher is not responsible for this behavior; please review the behavior of the games or mods yourself and remove them if necessary.</string>
-    <!-- Introduction to the permissions listed on the welcome screen -->
-    <string name="welcome_screen_permissions_intro">The launcher uses the following permissions and features. Please read them carefully.</string>
-    <!-- Network and account permission description in the welcome user notice -->
-    <string name="welcome_screen_permission_network">Network and network state: Used for Microsoft account sign-in, third-party authentication server account sign-in, game and mod loader downloads, launcher update checks, community content search and downloads, and Terracotta multiplayer.</string>
-    <!-- Community resource provider description; %1$s is the launcher name -->
-    <string name="welcome_screen_permission_community">Community resources, such as mods and resource packs, are provided by CurseForge, Modrinth, mirror sites, and other respective service providers, not directly by %1$s.</string>
-    <!-- Storage permission description in the welcome user notice -->
-    <string name="welcome_screen_permission_storage">Storage (including all files access): Used to manage game versions, mods, modpacks, resource packs, shader packs, saves, and screenshots, and to import and export files. The file manager can access shared storage.</string>
-    <!-- Notification and foreground service description in the welcome user notice -->
-    <string name="welcome_screen_permission_notifications">Notifications and foreground services: Used to show download progress, keep downloads and the game running in the background without system interruption, and show Terracotta multiplayer connection status.</string>
-    <!-- Microphone permission description in the welcome user notice -->
-    <string name="welcome_screen_permission_microphone">Microphone: Used for the input level check in settings and in-game voice features. The level check only calculates volume in real time and does not save recordings. Voice behavior in games or mods is determined by the game or mod itself.</string>
-    <!-- VPN permission description for Terracotta multiplayer -->
-    <string name="welcome_screen_permission_vpn">VPN: Used only when Terracotta multiplayer is enabled to create a virtual network and exchange connection-required information with multiplayer nodes and other players in the room.</string>
-    <!-- Vibration and sensor description in the welcome user notice -->
-    <string name="welcome_screen_permission_device">Device interaction: Vibration is used for touch feedback; the gyroscope and high-rate sensors are used for game controls.</string>
-    <!-- Confirmation shown below the welcome screen permissions -->
-    <string name="welcome_screen_notice_confirmation">By tapping “Get Started”, you acknowledge that you have read and understood the permissions above and their purposes.</string>
-    <!-- Heading of the legal information on the welcome screen -->
-    <string name="welcome_screen_legal_title">Legal Information</string>
-    <!-- Unofficial launcher affiliation notice; %1$s is the launcher name -->
-    <string name="welcome_screen_legal_unofficial">%1$s is an unofficial Minecraft launcher. It is not affiliated with Mojang Studios, Microsoft, or NetEase, and has not been endorsed by any of them.</string>
-    <!-- Minecraft trademark and affiliation notice; %1$s is the launcher name -->
-    <string name="welcome_screen_legal_trademark">The names \"Minecraft\" and \"我的世界\" are trademarks of Microsoft or NetEase. %1$s is not affiliated with Microsoft or NetEase.</string>
+    <!-- Heading of the agreement links on the welcome screen -->
+    <string name="welcome_screen_agreement_title">User Agreements</string>
+    <!-- Checkbox label for explicitly accepting the displayed agreements -->
+    <string name="welcome_screen_agreement_confirmation">I have read and agree to the documents above.</string>
+    <!-- Message shown when an agreement document cannot be loaded -->
+    <string name="agreement_content_unavailable">This document is unavailable.</string>
+    <!-- Title of the native dialog shown to returning users when the agreements change -->
+    <string name="agreement_update_title">Agreements Updated</string>
+    <!-- Message asking returning users to review and accept the updated agreements -->
+    <string name="agreement_update_message">The User Agreement or Privacy Policy has been updated. Please review and accept both documents again before continuing.</string>
     <!-- Button acknowledging the notice and continuing past the welcome screen -->
     <string name="welcome_screen_start">Get Started</string>
     <!-- Description on the first run screen explaining bundled files must be extracted -->

@@ -47,6 +47,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -63,6 +64,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
@@ -70,22 +72,30 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.movtery.zalithlauncher.BuildKeys
 import com.movtery.zalithlauncher.R
+import com.movtery.zalithlauncher.legal.AvailableAgreement
 import com.movtery.zalithlauncher.ui.base.BaseScreen
 import com.movtery.zalithlauncher.ui.components.ScalingActionButton
 import com.movtery.zalithlauncher.ui.components.fadeEdge
 import com.movtery.zalithlauncher.ui.components.swapAnimateAlphaProgressAsState
 import com.movtery.zalithlauncher.ui.components.swapAnimateProgressAsState
 import com.movtery.zalithlauncher.ui.components.verticalScrollWithBar
+import com.movtery.zalithlauncher.ui.screens.main.control_editor.InfoLayoutTextItem
 import com.movtery.zalithlauncher.utils.animation.SwapTimeline
 import com.movtery.zalithlauncher.viewmodel.SplashBackStackViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
+import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun WelcomeScreen(
     onFinished: () -> Unit,
+    availableAgreement: StateFlow<AvailableAgreement?>,
     screenViewModel: SplashBackStackViewModel,
     modifier: Modifier = Modifier
 ) {
@@ -93,10 +103,15 @@ fun WelcomeScreen(
         screenKey = SplashOperation.Welcome,
         currentKey = screenViewModel.splashScreen.currentKey
     ) { isVisible ->
+        val agreement by availableAgreement.collectAsStateWithLifecycle()
         var started by remember { mutableStateOf(false) }
+        var agreementRequired by remember(agreement) { mutableStateOf(agreement != null) }
+        var agreementChecked by remember(agreement) { mutableStateOf(false) }
         val onStart = {
-            started = true
-            onFinished()
+            if (!agreementRequired || agreementChecked) {
+                started = true
+                onFinished()
+            }
         }
 
         BoxWithConstraints(
@@ -109,6 +124,11 @@ fun WelcomeScreen(
                     isVisible = isVisible,
                     started = started,
                     onStart = onStart,
+                    availableAgreement = availableAgreement,
+                    agreementRequired = agreementRequired,
+                    agreementChecked = agreementChecked,
+                    onAgreementCheckedChange = { agreementChecked = it },
+                    onAgreementRequiredChange = { agreementRequired = it },
                     modifier = Modifier.fillMaxSize()
                 )
             } else {
@@ -140,6 +160,11 @@ fun WelcomeScreen(
                             .padding(vertical = 4.dp),
                         started = started,
                         onStart = onStart,
+                        availableAgreement = availableAgreement,
+                        agreementRequired = agreementRequired,
+                        agreementChecked = agreementChecked,
+                        onAgreementCheckedChange = { agreementChecked = it },
+                        onAgreementRequiredChange = { agreementRequired = it },
                     )
                 }
             }
@@ -341,6 +366,11 @@ private fun TabletWelcomeScreen(
     isVisible: Boolean,
     started: Boolean,
     onStart: () -> Unit,
+    availableAgreement: StateFlow<AvailableAgreement?>,
+    agreementRequired: Boolean,
+    agreementChecked: Boolean,
+    onAgreementCheckedChange: (Boolean) -> Unit,
+    onAgreementRequiredChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(
@@ -377,6 +407,10 @@ private fun TabletWelcomeScreen(
                 )
 
                 WelcomeIntroduction(
+                    availableAgreement = availableAgreement,
+                    agreementChecked = agreementChecked,
+                    onAgreementCheckedChange = onAgreementCheckedChange,
+                    onAgreementRequiredChange = onAgreementRequiredChange,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp)
@@ -385,12 +419,13 @@ private fun TabletWelcomeScreen(
             }
 
             StartButton(
-                started = started,
-                onStart = onStart,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .padding(28.dp)
-                    .welcomeEntrance(isVisible = isVisible, delayMillis = 300)
+                    .welcomeEntrance(isVisible = isVisible, delayMillis = 300),
+                started = started,
+                onStart = onStart,
+                canStart = !agreementRequired || agreementChecked,
             )
         }
     }
@@ -400,6 +435,11 @@ private fun TabletWelcomeScreen(
 private fun WelcomeInformation(
     started: Boolean,
     onStart: () -> Unit,
+    availableAgreement: StateFlow<AvailableAgreement?>,
+    agreementRequired: Boolean,
+    agreementChecked: Boolean,
+    onAgreementCheckedChange: (Boolean) -> Unit,
+    onAgreementRequiredChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
@@ -417,6 +457,10 @@ private fun WelcomeInformation(
             )
 
             WelcomeIntroduction(
+                availableAgreement = availableAgreement,
+                agreementChecked = agreementChecked,
+                onAgreementCheckedChange = onAgreementCheckedChange,
+                onAgreementRequiredChange = onAgreementRequiredChange,
                 modifier = Modifier.fillMaxWidth()
             )
         }
@@ -424,6 +468,7 @@ private fun WelcomeInformation(
         StartButton(
             started = started,
             onStart = onStart,
+            canStart = !agreementRequired || agreementChecked,
             modifier = Modifier.align(Alignment.BottomEnd)
         )
     }
@@ -455,8 +500,46 @@ private fun ProductBanner(
 
 @Composable
 private fun WelcomeIntroduction(
+    availableAgreement: StateFlow<AvailableAgreement?>,
+    agreementChecked: Boolean,
+    onAgreementCheckedChange: (Boolean) -> Unit,
+    onAgreementRequiredChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val agreement by availableAgreement.collectAsStateWithLifecycle()
+
+    val context = LocalContext.current
+    var currentAgreement by remember(agreement) {
+        mutableStateOf<AvailableAgreement.DocumentFile?>(null)
+    }
+    var documents by remember(agreement) {
+        mutableStateOf<List<AvailableAgreement.DocumentFile.Data>>(emptyList())
+    }
+    var selectedDocument by remember(agreement) {
+        mutableStateOf<AvailableAgreement.DocumentFile.Data?>(null)
+    }
+
+    LaunchedEffect(agreement) {
+        val region = if (Locale.getDefault().country.equals("CN", ignoreCase = true)) "zh" else "global"
+        val selectedAgreement = agreement?.files?.firstOrNull {
+            it.effectiveRegion.equals(region, ignoreCase = true)
+        } ?: agreement?.files?.firstOrNull {
+            it.effectiveRegion.equals("global", ignoreCase = true)
+        }
+        currentAgreement = selectedAgreement
+
+        val availableDocuments = withContext(Dispatchers.IO) {
+            selectedAgreement?.dataList.orEmpty().filter {
+                it.title.isNotBlank() && it.path.isNotBlank() && runCatching {
+                    context.assets.open(it.path).close()
+                }.isSuccess
+            }
+        }
+        documents = availableDocuments
+        onAgreementRequiredChange(availableDocuments.isNotEmpty())
+        if (availableDocuments.isEmpty()) onAgreementCheckedChange(false)
+    }
+
     CompositionLocalProvider(
         LocalTextStyle provides MaterialTheme.typography.bodyMedium
     ) {
@@ -477,105 +560,52 @@ private fun WelcomeIntroduction(
                 )
             }
 
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.welcome_screen_notice_title),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-
+            if (documents.isNotEmpty()) {
                 Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(R.string.welcome_screen_notice_free, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.welcome_screen_notice_license, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.welcome_screen_notice_local_data, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.welcome_screen_notice_third_party_data, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
-                }
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.welcome_screen_agreement_title),
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
 
-                Text(
-                    text = stringResource(R.string.welcome_screen_permissions_intro),
-                    lineHeight = 26.sp
-                )
+                        documents.forEach { document ->
+                            InfoLayoutTextItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { selectedDocument = document },
+                                title = document.title,
+                            )
+                        }
+                    }
 
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(R.string.welcome_screen_permission_network),
-                        lineHeight = 26.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.welcome_screen_permission_community, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
-                }
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = agreementChecked,
+                            onCheckedChange = onAgreementCheckedChange
+                        )
 
-                Text(
-                    text = stringResource(R.string.welcome_screen_permission_storage),
-                    lineHeight = 26.sp
-                )
-                Text(
-                    text = stringResource(R.string.welcome_screen_permission_notifications),
-                    lineHeight = 26.sp
-                )
-                Text(
-                    text = stringResource(R.string.welcome_screen_permission_microphone),
-                    lineHeight = 26.sp
-                )
-                Text(
-                    text = stringResource(R.string.welcome_screen_permission_vpn),
-                    lineHeight = 26.sp
-                )
-                Text(
-                    text = stringResource(R.string.welcome_screen_permission_device),
-                    lineHeight = 26.sp
-                )
-
-                Text(
-                    text = stringResource(R.string.welcome_screen_notice_confirmation),
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontWeight = FontWeight.SemiBold,
-                    lineHeight = 26.sp
-                )
-            }
-
-
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = stringResource(R.string.welcome_screen_legal_title),
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = stringResource(R.string.welcome_screen_legal_unofficial, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
-                    Text(
-                        text = stringResource(R.string.welcome_screen_legal_trademark, BuildKeys.LAUNCHER_NAME),
-                        lineHeight = 26.sp
-                    )
+                        Text(
+                            text = stringResource(R.string.welcome_screen_agreement_confirmation),
+                            color = MaterialTheme.colorScheme.secondary
+                        )
+                    }
                 }
             }
         }
+    }
+
+    selectedDocument?.let { document ->
+        AgreementDocumentDialog(
+            document = document,
+            onDismissRequest = { selectedDocument = null }
+        )
     }
 }
 
@@ -583,11 +613,12 @@ private fun WelcomeIntroduction(
 private fun StartButton(
     started: Boolean,
     onStart: () -> Unit,
+    canStart: Boolean,
     modifier: Modifier = Modifier
 ) {
     ScalingActionButton(
         modifier = modifier.defaultMinSize(minHeight = 52.dp),
-        enabled = !started,
+        enabled = canStart && !started,
         onClick = onStart
     ) {
         Text(text = stringResource(R.string.welcome_screen_start))
