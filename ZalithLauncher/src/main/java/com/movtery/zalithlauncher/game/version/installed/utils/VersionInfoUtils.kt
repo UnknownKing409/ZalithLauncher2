@@ -84,7 +84,10 @@ fun parseJsonToVersionInfo(jsonFile: File): VersionInfo? {
             )
         }
         val (versionId, loaderInfos) = detectMinecraftAndLoader(jsonObject)
-        VersionInfo(versionId, quickPlay, loaderInfos)
+        VersionInfo(
+            versionId, quickPlay, loaderInfos,
+            jsonObject.get("type")?.takeIf(JsonElement::isJsonPrimitive)?.asString
+        )
     }.getOrElse {
         Logger.error(TAG, "Error parsing version json", it)
         null

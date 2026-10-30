@@ -77,6 +77,7 @@ import com.movtery.zalithlauncher.ui.components.verticalScrollWithBar
 import com.movtery.zalithlauncher.ui.screens.NestedNavKey
 import com.movtery.zalithlauncher.ui.screens.NormalNavKey
 import com.movtery.zalithlauncher.ui.screens.TitledNavKey
+import com.movtery.zalithlauncher.ui.screens.content.elements.getGameVersionIconRes
 import com.movtery.zalithlauncher.ui.screens.content.elements.isFilenameInvalid
 import com.movtery.zalithlauncher.ui.theme.cardColor
 import com.movtery.zalithlauncher.ui.theme.onCardColor
@@ -498,6 +499,7 @@ private fun ScreenHeader(
             VersionIconPreview(
                 modifier = Modifier.size(28.dp),
                 currentAddon = currentAddon,
+                gameVersion = gameVersion,
                 refreshIcon = refreshIcon
             )
 
@@ -600,9 +602,10 @@ private fun ScreenHeader(
 private fun VersionIconPreview(
     modifier: Modifier = Modifier,
     currentAddon: CurrentAddon,
+    gameVersion: String,
     refreshIcon: Any? = null
 ) {
-    val iconRes = remember(refreshIcon) {
+    val iconRes = remember(refreshIcon, gameVersion) {
         when {
             currentAddon.optifineVersion.value != null && currentAddon.forgeVersion.value != null -> R.drawable.img_anvil //OptiFine & Forge 同时选择
             currentAddon.optifineVersion.value != null -> R.drawable.img_loader_optifine
@@ -611,7 +614,7 @@ private fun VersionIconPreview(
             currentAddon.fabricVersion.value != null -> R.drawable.img_loader_fabric
             currentAddon.legacyFabricVersion.value != null -> R.drawable.img_loader_legacy_fabric
             currentAddon.quiltVersion.value != null -> R.drawable.img_loader_quilt
-            else -> R.drawable.img_minecraft
+            else -> getGameVersionIconRes(gameVersion)
         }
     }
 

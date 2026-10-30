@@ -28,7 +28,8 @@ import kotlinx.parcelize.Parcelize
 class VersionInfo(
     val minecraftVersion: String,
     val quickPlay: QuickPlay,
-    val loaderInfos: List<LoaderInfo>
+    val loaderInfos: List<LoaderInfo>,
+    val type: String? = null
 ): Parcelable {
     /**
      * 主加载器
