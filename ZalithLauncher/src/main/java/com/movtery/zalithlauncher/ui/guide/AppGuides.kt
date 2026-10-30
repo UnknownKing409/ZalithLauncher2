@@ -79,7 +79,7 @@ class AppGuides(
      * @return 是否成功启动（流为空或已有其他流激活时失败，或已播放过当前版本）
      */
     fun startOnce(group: GuideKeys.Keys): Boolean {
-        return GuideProgress.playedVersion(group) < group.version && start(group)
+        return !GuideProgress.isPlayed(group) && start(group)
     }
 }
 
