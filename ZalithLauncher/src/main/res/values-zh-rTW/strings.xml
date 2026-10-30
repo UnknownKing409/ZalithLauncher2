@@ -1523,7 +1523,6 @@
     <string name="fm_trash_size">大小：%s</string>
     <string name="fm_trash_sort_deleted">刪除時間</string>
     <string name="fm_trash_title">資源回收筒</string>
-
     <string name="guide_main_welcome_title">歡迎使用 %s！</string>
     <string name="guide_main_welcome_text">我們來簡單看看主畫面的功能吧～</string>
     <string name="guide_main_account">點擊此處可進入帳號管理頁面，你可以新增或管理 Minecraft 帳號</string>
@@ -1551,4 +1550,7 @@
     <string name="guide_editor_save">編輯完成後，記得儲存控制佈局！</string>
     <string name="guide_tip_blank">點擊空白處以進入下一步</string>
     <string name="guide_tip_finish">點擊空白處以完成引導</string>
+    <string name="control_editor_menu_new_widget_joystick">新增搖桿</string>
+    <string name="festivals_halloween">萬聖節快樂！</string>
+    <string name="festivals_valentines">情人節快樂！</string>
 </resources>
