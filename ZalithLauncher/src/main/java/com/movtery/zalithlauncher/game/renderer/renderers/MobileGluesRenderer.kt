@@ -142,11 +142,15 @@ object MobileGluesRenderer : ConfigurableRenderer {
 
     override fun getUniqueIdentifier(): String = "acaf8100-bbaf-4d68-b30d-38bf42fcd640"
 
+    override fun supportsSfpewByDefault(): Boolean = true
+
     override fun getRendererName(): String = "MobileGlues"
 
     override fun getRendererSummary(): String = "OpenGL 4.0"
 
-    override fun getMinMCVersion(): String = "1.17"
+    override fun getMaxMCVersion(): String = "26.3-snapshot-3"
+
+    override fun getDisplayMaxMCVersion(): String = "26.2"
 
     override fun getConfiguredEnv(config: ResolvedRendererConfig): Map<String, String> {
         val mgDir = File(PathManager.DIR_FILES_PRIVATE, "mobileglues")

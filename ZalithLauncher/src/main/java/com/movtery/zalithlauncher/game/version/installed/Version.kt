@@ -84,6 +84,10 @@ class Version(
      * 启用控制代理
      */
     var enableTouchProxy: Boolean = false,
+    /**
+     * 是否检测到自实现 FPE 模拟的模组
+     */
+    var fpeEmulatorModDetected: Boolean = false,
 ): Parcelable {
     /**
      * 当前版本是否被置顶
