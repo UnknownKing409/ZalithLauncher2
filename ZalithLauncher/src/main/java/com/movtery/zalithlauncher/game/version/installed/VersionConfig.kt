@@ -173,6 +173,30 @@ class VersionConfig(
         touchVibrateKind,
     )
 
+    /**
+     * 判断此配置与另一个配置所承载的设置是否存在差异
+     */
+    fun isModified(other: VersionConfig): Boolean {
+        return getSettingStateNotNull(isolationType) != getSettingStateNotNull(other.isolationType) ||
+                getSettingStateNotNull(skipGameIntegrityCheck) != getSettingStateNotNull(other.skipGameIntegrityCheck) ||
+                getStringNotNull(javaRuntime) != getStringNotNull(other.javaRuntime) ||
+                getStringNotNull(jvmArgs) != getStringNotNull(other.jvmArgs) ||
+                getStringNotNull(gameArgs) != getStringNotNull(other.gameArgs) ||
+                getStringNotNull(renderer) != getStringNotNull(other.renderer) ||
+                getSettingStateNotNull(sfpewPluginLayer) != getSettingStateNotNull(other.sfpewPluginLayer) ||
+                getSettingStateNotNull(sfpewRelaxedContext) != getSettingStateNotNull(other.sfpewRelaxedContext) ||
+                getStringNotNull(driver) != getStringNotNull(other.driver) ||
+                graphicsApi != other.graphicsApi ||
+                getStringNotNull(control) != getStringNotNull(other.control) ||
+                getStringNotNull(customPath) != getStringNotNull(other.customPath) ||
+                getStringNotNull(customInfo) != getStringNotNull(other.customInfo) ||
+                getStringNotNull(versionSummary) != getStringNotNull(other.versionSummary) ||
+                getStringNotNull(serverIp) != getStringNotNull(other.serverIp) ||
+                ramAllocation != other.ramAllocation ||
+                touchVibrateDuration != other.touchVibrateDuration ||
+                touchVibrateKind != other.touchVibrateKind
+    }
+
     fun save() {
         runCatching {
             saveWithThrowable()
