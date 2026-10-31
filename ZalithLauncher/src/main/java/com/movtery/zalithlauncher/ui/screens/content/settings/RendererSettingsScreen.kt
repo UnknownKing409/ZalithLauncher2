@@ -111,10 +111,12 @@ fun RendererSettingsScreen(
                         .animated(ctx)
                 ) {
                     val currentRendererId = AllSettings.renderer.state
-                    val configurableRenderer = remember(currentRendererId) {
+                    val currentRenderer = remember(currentRendererId) {
                         Renderers.getRenderers()
-                            .filterIsInstance<ConfigurableRenderer>()
                             .find { it.getUniqueIdentifier() == currentRendererId }
+                    }
+                    val configurableRenderer = remember(currentRenderer) {
+                        (currentRenderer as? ConfigurableRenderer)
                             ?.takeIf { it.configSpec.entries.isNotEmpty() }
                     }
                     var showConfigDialog by remember { mutableStateOf(false) }
@@ -174,6 +176,7 @@ fun RendererSettingsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,
                         unit = AllSettings.sfpewPluginLayer,
+                        enabled = currentRenderer is Plugin,
                         title = stringResource(R.string.settings_renderer_sfpew_plugin_layer_title),
                         summary = stringResource(R.string.settings_renderer_sfpew_plugin_layer_summary)
                     )
@@ -182,6 +185,11 @@ fun RendererSettingsScreen(
                         modifier = Modifier.fillMaxWidth(),
                         position = CardPosition.Middle,
                         unit = AllSettings.sfpewRelaxedContext,
+                        enabled = currentRenderer?.let { renderer ->
+                            renderer.supportsSfpewByDefault() ||
+                            // 如果是插件，需要看是否给插件启用了这个玩意
+                            (renderer is Plugin && AllSettings.sfpewPluginLayer.state)
+                        } == true,
                         title = stringResource(R.string.renderer_config_sfpew_relaxed_context_title),
                         summary = stringResource(R.string.renderer_config_sfpew_relaxed_context_desc)
                     )
