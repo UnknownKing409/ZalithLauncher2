@@ -45,11 +45,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.game.control.ControlManager
 import com.movtery.zalithlauncher.game.multirt.RuntimesManager
+import com.movtery.zalithlauncher.game.plugin.Plugin
 import com.movtery.zalithlauncher.game.plugin.driver.DriverPluginManager
 import com.movtery.zalithlauncher.game.renderer.ConfigurableRenderer
 import com.movtery.zalithlauncher.game.renderer.Renderers
 import com.movtery.zalithlauncher.game.support.touch_controller.VibrationHandler
 import com.movtery.zalithlauncher.game.version.installed.GraphicsApi
+import com.movtery.zalithlauncher.game.version.installed.SettingState
 import com.movtery.zalithlauncher.game.version.installed.Version
 import com.movtery.zalithlauncher.game.version.installed.VersionConfig
 import com.movtery.zalithlauncher.setting.AllSettings
@@ -221,6 +223,10 @@ private fun VersionConfigs(
         val renderers = Renderers.getRenderers()
         val renderersIdList = getIDList(renderers) { IDItem(it.getUniqueIdentifier(), it.getRendererName()) }
         var currentRendererId by remember { mutableStateOf(config.renderer) }
+        val effectiveRendererId = currentRendererId.ifEmpty { AllSettings.renderer.state }
+        val effectiveRenderer = remember(effectiveRendererId) {
+            renderers.find { it.getUniqueIdentifier() == effectiveRendererId }
+        }
         val configurableRenderer = remember(currentRendererId) {
             if (currentRendererId.isNotEmpty()) {
                 renderers.filterIsInstance<ConfigurableRenderer>()
@@ -271,6 +277,47 @@ private fun VersionConfigs(
                 onDismissRequest = { showConfigDialog = false }
             )
         }
+
+        var sfpewPluginLayer by remember { mutableStateOf(config.sfpewPluginLayer) }
+        val sfpewPluginLayerEnabled = when (sfpewPluginLayer) {
+            SettingState.FOLLOW_GLOBAL -> AllSettings.sfpewPluginLayer.state
+            SettingState.ENABLE -> true
+            SettingState.DISABLE -> false
+        }
+        StatefulDropdownMenuFollowGlobal(
+            modifier = Modifier.fillMaxWidth(),
+            position = CardPosition.Middle,
+            currentValue = sfpewPluginLayer,
+            enabled = effectiveRenderer is Plugin,
+            onValueChange = { type ->
+                if (config.sfpewPluginLayer != type) {
+                    config.sfpewPluginLayer = type
+                    sfpewPluginLayer = type
+                    onConfigChanged()
+                }
+            },
+            title = stringResource(R.string.settings_renderer_sfpew_plugin_layer_title),
+            summary = stringResource(R.string.settings_renderer_sfpew_plugin_layer_summary)
+        )
+
+        StatefulDropdownMenuFollowGlobal(
+            modifier = Modifier.fillMaxWidth(),
+            position = CardPosition.Middle,
+            currentValue = config.sfpewRelaxedContext,
+            enabled = effectiveRenderer?.let { renderer ->
+                renderer.supportsSfpewByDefault() ||
+                // 如果是插件，需要看是否给插件启用了这个玩意
+                (renderer is Plugin && sfpewPluginLayerEnabled)
+            } == true,
+            onValueChange = { type ->
+                if (config.sfpewRelaxedContext != type) {
+                    config.sfpewRelaxedContext = type
+                    onConfigChanged()
+                }
+            },
+            title = stringResource(R.string.renderer_config_sfpew_relaxed_context_title),
+            summary = stringResource(R.string.renderer_config_sfpew_relaxed_context_desc)
+        )
 
         val drivers = DriverPluginManager.getDriverList()
         val driversIdList = getIDList(drivers) { IDItem(it.id, it.name) }

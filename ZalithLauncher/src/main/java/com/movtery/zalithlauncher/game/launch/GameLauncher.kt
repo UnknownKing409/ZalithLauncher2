@@ -502,7 +502,7 @@ private fun setRendererEnv(
         envMap["SFPEW_EGL"] = envMap["SDL_EGL_LIBRARY"]
             ?: envMap["POJAVEXEC_EGL"]
             ?: "libEGL.so"
-        if (AllSettings.sfpewRelaxedContext.getValue()) {
+        if (version.isSfpewRelaxedContextEnabled()) {
             envMap["SFPEW_RELAXED_CONTEXT"] = "1"
         }
         val sfpewLibraryPath = getSfpewLibraryPath()
