@@ -309,7 +309,7 @@ fun LaunchGameOperation(
                 // 设备完全支持 Vulkan 时跳过渲染器的版本支持检查
                 if (!version.hasVulkanBackend() || !ensureVulkanSupported(version)) {
                     val supportedMin = currentRenderer.getMinMCVersion()?.let { verStr ->
-                        !isSfpewConfiguredFor(currentRenderer) && mcVer.isLowerVer(verStr)
+                        !isSfpewConfiguredFor(currentRenderer, version) && mcVer.isLowerVer(verStr)
                     } ?: false
                     val supportedMax = currentRenderer.getMaxMCVersion()?.let { verStr ->
                         mcVer.isBiggerVer(verStr)

@@ -23,7 +23,6 @@ import com.movtery.zalithlauncher.game.version.installed.Version
 import com.movtery.zalithlauncher.game.version.mod.LocalMod
 import com.movtery.zalithlauncher.game.version.mod.isEnabled
 import com.movtery.zalithlauncher.path.PathManager
-import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.utils.logging.Logger
 
 private const val TAG = "SimpleFPEWrapper"
@@ -34,11 +33,11 @@ private const val TAG = "SimpleFPEWrapper"
 fun getSfpewLibraryPath(): String = "${PathManager.DIR_NATIVE_LIB}/libSimpleFPEWrapper.so"
 
 /**
- * @return 判断是否已为 [renderer] 配置 SFPEW
+ * @return 判断启动 [version] 时是否已为 [renderer] 配置 SFPEW
  */
-fun isSfpewConfiguredFor(renderer: RendererInterface): Boolean {
+fun isSfpewConfiguredFor(renderer: RendererInterface, version: Version): Boolean {
     return if (renderer is Plugin) {
-        AllSettings.sfpewPluginLayer.getValue()
+        version.isSfpewPluginLayerEnabled()
     } else {
         renderer.supportsSfpewByDefault()
     }
@@ -50,7 +49,7 @@ fun isSfpewConfiguredFor(renderer: RendererInterface): Boolean {
  * 版本中存在 FPE 模拟模组时禁用兼容层，避免功能冲突
  */
 fun isSfpewEnabledFor(renderer: RendererInterface, version: Version): Boolean =
-    !version.fpeEmulatorModDetected && isSfpewConfiguredFor(renderer)
+    !version.fpeEmulatorModDetected && isSfpewConfiguredFor(renderer, version)
 
 /**
  * 检测 [mods] 中已启用的 FPE 模拟模组

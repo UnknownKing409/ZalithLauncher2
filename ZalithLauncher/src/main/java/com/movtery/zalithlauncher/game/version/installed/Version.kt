@@ -209,6 +209,10 @@ class Version(
 
     fun getRenderer(): String = versionConfig.renderer.getValueOrDefault(AllSettings.renderer.getValue())
 
+    fun isSfpewPluginLayerEnabled(): Boolean = versionConfig.isSfpewPluginLayerEnabled()
+
+    fun isSfpewRelaxedContextEnabled(): Boolean = versionConfig.isSfpewRelaxedContextEnabled()
+
     fun getDriver(): String = versionConfig.driver.getValueOrDefault(AllSettings.vulkanDriver.getValue())
 
     fun getGraphicsApi(): GraphicsApi = versionConfig.graphicsApi ?: AllSettings.graphicsApi.getValue()
