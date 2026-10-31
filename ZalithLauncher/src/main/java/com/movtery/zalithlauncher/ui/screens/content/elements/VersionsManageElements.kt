@@ -82,7 +82,6 @@ import com.movtery.zalithlauncher.game.version.installed.VersionsManager
 import com.movtery.zalithlauncher.game.version.installed.cleanup.CleanFailedException
 import com.movtery.zalithlauncher.game.version.installed.cleanup.GameAssetCleaner
 import com.movtery.zalithlauncher.game.versioninfo.MinecraftVersion
-import com.movtery.zalithlauncher.game.versioninfo.MinecraftVersions
 import com.movtery.zalithlauncher.setting.AllSettings
 import com.movtery.zalithlauncher.ui.androidText
 import com.movtery.zalithlauncher.ui.components.LittleTextLabel
@@ -967,7 +966,7 @@ fun VersionIconImage(
     val defaultIconRes = remember(version) {
         version?.getVersionInfo()?.let { info ->
             when (val loader = info.primaryLoader?.loader) {
-                null -> getGameVersionIconRes(info.minecraftVersion, info.type)
+                null -> getGameVersionIconRes(info.type)
                 ModLoader.OPTIFINE -> R.drawable.img_loader_optifine
                 else -> getLoaderIconRes(loader)
             }
@@ -1049,18 +1048,12 @@ private fun getLoaderIconRes(
 }
 
 @DrawableRes
-fun getGameVersionIconRes(gameVersion: String, jsonType: String? = null): Int {
-    val manifestType = MinecraftVersions.allVersions.value
-        .find { gameVersion.equals(it.version.id, ignoreCase = true) }
-        ?.type
-    return when {
-        manifestType == MinecraftVersion.Type.Snapshot -> R.drawable.img_command_block
-        manifestType == MinecraftVersion.Type.AprilFools -> R.drawable.img_diamond_block
-        manifestType == MinecraftVersion.Type.OldBeta -> R.drawable.img_old_cobblestone
-        manifestType == MinecraftVersion.Type.OldAlpha -> R.drawable.img_old_grass_block
-        jsonType == "snapshot" -> R.drawable.img_command_block
-        jsonType == "old_beta" -> R.drawable.img_old_cobblestone
-        jsonType == "old_alpha" -> R.drawable.img_old_grass_block
+fun getGameVersionIconRes(type: MinecraftVersion.Type): Int {
+    return when (type) {
+        MinecraftVersion.Type.Snapshot -> R.drawable.img_command_block
+        MinecraftVersion.Type.OldBeta -> R.drawable.img_old_cobblestone
+        MinecraftVersion.Type.OldAlpha -> R.drawable.img_old_grass_block
+        MinecraftVersion.Type.AprilFools -> R.drawable.img_diamond_block
         else -> R.drawable.img_minecraft
     }
 }

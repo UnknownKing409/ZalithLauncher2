@@ -68,6 +68,7 @@ import com.movtery.zalithlauncher.game.addons.modloader.optifine.OptiFineVersion
 import com.movtery.zalithlauncher.game.addons.modloader.optifine.OptiFineVersions
 import com.movtery.zalithlauncher.game.download.game.GameDownloadInfo
 import com.movtery.zalithlauncher.game.version.installed.VersionsManager.isVersionExists
+import com.movtery.zalithlauncher.game.versioninfo.MinecraftVersion
 import com.movtery.zalithlauncher.ui.base.BaseScreen
 import com.movtery.zalithlauncher.ui.components.AnimatedColumn
 import com.movtery.zalithlauncher.ui.components.SimpleTextInputField
@@ -250,6 +251,7 @@ fun DownloadGameWithAddonScreen(
                 itemContainerColor = cardColor(),
                 itemContentColor = onCardColor(),
                 gameVersion = key.gameVersion,
+                gameType = key.type,
                 currentAddon = viewModel.currentAddon,
                 refreshIcon = viewModel.refreshIcon,
                 refreshErrorCheck = refreshErrorCheck,
@@ -487,6 +489,7 @@ private fun ScreenHeader(
     itemContainerColor: Color,
     itemContentColor: Color,
     gameVersion: String,
+    gameType: MinecraftVersion.Type,
     currentAddon: CurrentAddon,
     refreshIcon: Any? = null,
     refreshErrorCheck: Any? = null,
@@ -499,7 +502,7 @@ private fun ScreenHeader(
             VersionIconPreview(
                 modifier = Modifier.size(28.dp),
                 currentAddon = currentAddon,
-                gameVersion = gameVersion,
+                gameType = gameType,
                 refreshIcon = refreshIcon
             )
 
@@ -602,10 +605,10 @@ private fun ScreenHeader(
 private fun VersionIconPreview(
     modifier: Modifier = Modifier,
     currentAddon: CurrentAddon,
-    gameVersion: String,
+    gameType: MinecraftVersion.Type,
     refreshIcon: Any? = null
 ) {
-    val iconRes = remember(refreshIcon, gameVersion) {
+    val iconRes = remember(refreshIcon, gameType) {
         when {
             currentAddon.optifineVersion.value != null && currentAddon.forgeVersion.value != null -> R.drawable.img_anvil //OptiFine & Forge 同时选择
             currentAddon.optifineVersion.value != null -> R.drawable.img_loader_optifine
@@ -614,7 +617,7 @@ private fun VersionIconPreview(
             currentAddon.fabricVersion.value != null -> R.drawable.img_loader_fabric
             currentAddon.legacyFabricVersion.value != null -> R.drawable.img_loader_legacy_fabric
             currentAddon.quiltVersion.value != null -> R.drawable.img_loader_quilt
-            else -> getGameVersionIconRes(gameVersion)
+            else -> getGameVersionIconRes(gameType)
         }
     }
 

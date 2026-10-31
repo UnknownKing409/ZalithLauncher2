@@ -24,6 +24,7 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import com.movtery.zalithlauncher.game.addons.modloader.ModLoader
 import com.movtery.zalithlauncher.game.version.installed.VersionInfo
+import com.movtery.zalithlauncher.game.versioninfo.models.checkVersionType
 import com.movtery.zalithlauncher.utils.logging.Logger
 import com.movtery.zalithlauncher.utils.string.isNotEmptyOrBlank
 import java.io.File
@@ -84,9 +85,12 @@ fun parseJsonToVersionInfo(jsonFile: File): VersionInfo? {
             )
         }
         val (versionId, loaderInfos) = detectMinecraftAndLoader(jsonObject)
+        val type = detectMinecraftType(jsonObject)
         VersionInfo(
-            versionId, quickPlay, loaderInfos,
-            jsonObject.get("type")?.takeIf(JsonElement::isJsonPrimitive)?.asString
+            minecraftVersion = versionId,
+            quickPlay = quickPlay,
+            loaderInfos = loaderInfos,
+            type = checkVersionType(versionId, type)
         )
     }.getOrElse {
         Logger.error(TAG, "Error parsing version json", it)
@@ -135,6 +139,13 @@ private fun detectMinecraftAndLoader(versionJson: JsonObject): Pair<String, List
     val mcVersion = extractMinecraftVersion(versionJson)
     val loaderInfos = detectModLoaders(versionJson)
     return mcVersion to loaderInfos
+}
+
+private fun detectMinecraftType(versionJson: JsonObject): String? {
+    return versionJson.takeIf { it.has("type") }
+        ?.get("type")
+        ?.takeIf(JsonElement::isJsonPrimitive)
+        ?.asString
 }
 
 private fun extractMinecraftVersion(json: JsonObject): String {

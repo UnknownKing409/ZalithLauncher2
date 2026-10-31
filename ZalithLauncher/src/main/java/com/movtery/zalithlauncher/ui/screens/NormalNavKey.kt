@@ -21,6 +21,7 @@ package com.movtery.zalithlauncher.ui.screens
 import com.movtery.zalithlauncher.R
 import com.movtery.zalithlauncher.game.download.assets.platform.Platform
 import com.movtery.zalithlauncher.game.download.assets.platform.PlatformClasses
+import com.movtery.zalithlauncher.game.versioninfo.MinecraftVersion
 import com.movtery.zalithlauncher.ui.AndroidStringText
 import com.movtery.zalithlauncher.ui.androidText
 import com.movtery.zalithlauncher.ui.screens.content.FirstLoginMenu
@@ -164,7 +165,10 @@ sealed interface NormalNavKey : TitledNavKey {
         /** 选择游戏版本屏幕 */
         @Serializable data object SelectGameVersion : Versions
         /** 选择附加内容屏幕 */
-        @Serializable data class Addons(val gameVersion: String) : Versions
+        @Serializable data class Addons(
+            val gameVersion: String,
+            val type: MinecraftVersion.Type
+        ) : Versions
     }
 
     /** 搜索整合包屏幕 */
