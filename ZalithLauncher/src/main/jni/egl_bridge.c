@@ -63,7 +63,9 @@ EXTERNAL_API void pojavTerminate() {
                     sfpew_eglMakeCurrent_p != NULL ? sfpew_eglMakeCurrent_p : eglMakeCurrent_p;
             terminate_make_current(potatoBridge.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
             eglDestroySurface_p(potatoBridge.eglDisplay, potatoBridge.eglSurface);
-            eglDestroyContext_p(potatoBridge.eglDisplay, potatoBridge.eglContext);
+            EGLBoolean (*terminate_destroy_context)(EGLDisplay, EGLContext) =
+                    sfpew_eglDestroyContext_p != NULL ? sfpew_eglDestroyContext_p : eglDestroyContext_p;
+            terminate_destroy_context(potatoBridge.eglDisplay, potatoBridge.eglContext);
             eglTerminate_p(potatoBridge.eglDisplay);
             eglReleaseThread_p();
 

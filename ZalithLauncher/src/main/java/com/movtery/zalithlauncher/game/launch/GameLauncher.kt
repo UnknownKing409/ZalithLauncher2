@@ -499,13 +499,15 @@ private fun setRendererEnv(
 
     if (isSfpewEnabledFor(renderer, version)) {
         envMap["SFPEW_LAYER"] = "1"
-        envMap["POJAVEXEC_EGL"]?.let { eglName ->
-            envMap["SFPEW_EGL"] = eglName
-        }
+        envMap["SFPEW_EGL"] = envMap["SDL_EGL_LIBRARY"]
+            ?: envMap["POJAVEXEC_EGL"]
+            ?: "libEGL.so"
         if (AllSettings.sfpewRelaxedContext.getValue()) {
             envMap["SFPEW_RELAXED_CONTEXT"] = "1"
         }
-        envMap["SDL_OPENGL_LIBRARY"] = getSfpewLibraryPath()
+        val sfpewLibraryPath = getSfpewLibraryPath()
+        envMap["SDL_OPENGL_LIBRARY"] = sfpewLibraryPath
+        envMap["SDL_EGL_LIBRARY"] = sfpewLibraryPath
     }
 
     if (RendererPluginManager.selectedRendererPlugin != null) return

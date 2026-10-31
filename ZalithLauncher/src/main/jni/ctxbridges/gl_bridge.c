@@ -30,6 +30,13 @@ static EGLBoolean bridge_eglSwapBuffers(EGLDisplay dpy, EGLSurface draw) {
     return eglSwapBuffers_p(dpy, draw);
 }
 
+static EGLContext bridge_eglCreateContext(EGLDisplay dpy, EGLConfig config, EGLContext share_list,
+                                          const EGLint *attrib_list) {
+    if (sfpew_eglCreateContext_p != NULL)
+        return sfpew_eglCreateContext_p(dpy, config, share_list, attrib_list);
+    return eglCreateContext_p(dpy, config, share_list, attrib_list);
+}
+
 bool gl_init() {
     dlsym_EGL();
     g_EglDisplay = eglGetDisplay_p(EGL_DEFAULT_DISPLAY);
@@ -119,11 +126,11 @@ gl_render_window_t* gl_init_context(gl_render_window_t *share) {
     int libgl_es = libgl_es_str != NULL ? (int) strtol(libgl_es_str, NULL, 0) : 2;
     if (libgl_es < 0 || libgl_es > INT16_MAX) libgl_es = 2;
     const EGLint egl_context_attributes[] = { EGL_CONTEXT_CLIENT_VERSION, libgl_es, EGL_NONE };
-    bundle->context = eglCreateContext_p(g_EglDisplay, bundle->config, share == NULL ? EGL_NO_CONTEXT : share->context, egl_context_attributes);
+    bundle->context = bridge_eglCreateContext(g_EglDisplay, bundle->config, share == NULL ? EGL_NO_CONTEXT : share->context, egl_context_attributes);
 
     if (bundle->context == EGL_NO_CONTEXT)
     {
-        __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "eglCreateContext_p() finished with error: %04x",
+        __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "bridge_eglCreateContext() finished with error: %04x",
                             eglGetError_p());
         free(bundle);
         return NULL;

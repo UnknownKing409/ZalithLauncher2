@@ -27,6 +27,8 @@ EGLContext (*eglCreateContext_p) (EGLDisplay dpy, EGLConfig config, EGLContext s
 EGLBoolean (*eglSwapInterval_p) (EGLDisplay dpy, EGLint interval);
 EGLSurface (*eglGetCurrentSurface_p) (EGLint readdraw);
 EGLBoolean (*eglQuerySurface_p)(EGLDisplay display, EGLSurface surface, EGLint attribute, EGLint * value);
+EGLContext (*sfpew_eglCreateContext_p) (EGLDisplay dpy, EGLConfig config, EGLContext share_list, const EGLint *attrib_list);
+EGLBoolean (*sfpew_eglDestroyContext_p) (EGLDisplay dpy, EGLContext ctx);
 EGLBoolean (*sfpew_eglMakeCurrent_p) (EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx);
 EGLBoolean (*sfpew_eglSwapBuffers_p) (EGLDisplay dpy, EGLSurface draw);
 
@@ -76,10 +78,15 @@ void dlsym_EGL() {
         void* (*sfpew_get_proc)(const char*) =
                 wrapper != NULL ? (void* (*)(const char*)) dlsym(wrapper, "eglGetProcAddress") : NULL;
         if (sfpew_get_proc != NULL) {
+            sfpew_eglCreateContext_p = (void*) sfpew_get_proc("eglCreateContext");
+            sfpew_eglDestroyContext_p = (void*) sfpew_get_proc("eglDestroyContext");
             sfpew_eglMakeCurrent_p = (void*) sfpew_get_proc("eglMakeCurrent");
             sfpew_eglSwapBuffers_p = (void*) sfpew_get_proc("eglSwapBuffers");
         }
-        if (sfpew_eglMakeCurrent_p == NULL || sfpew_eglSwapBuffers_p == NULL) {
+        if (sfpew_eglCreateContext_p == NULL || sfpew_eglDestroyContext_p == NULL ||
+            sfpew_eglMakeCurrent_p == NULL || sfpew_eglSwapBuffers_p == NULL) {
+            sfpew_eglCreateContext_p = NULL;
+            sfpew_eglDestroyContext_p = NULL;
             sfpew_eglMakeCurrent_p = NULL;
             sfpew_eglSwapBuffers_p = NULL;
         }
