@@ -47,6 +47,8 @@ import com.movtery.zalithlauncher.game.renderer.config.GlobalRendererConfigStore
 import com.movtery.zalithlauncher.game.renderer.config.VersionRendererConfigStore
 import com.movtery.zalithlauncher.game.renderer.config.removeStaleEntries
 import com.movtery.zalithlauncher.game.renderer.config.resolveRendererConfig
+import com.movtery.zalithlauncher.game.renderer.getSfpewLibraryPath
+import com.movtery.zalithlauncher.game.renderer.isSfpewEnabledFor
 import com.movtery.zalithlauncher.game.support.touch_controller.ControllerProxy
 import com.movtery.zalithlauncher.game.version.installed.Version
 import com.movtery.zalithlauncher.game.version.installed.VersionInfoParser
@@ -204,7 +206,7 @@ class GameLauncher(
             }
         }
         if (Renderers.isCurrentRendererValid()) {
-            setRendererEnv(envMap, configuredRendererEnv)
+            setRendererEnv(envMap, version, configuredRendererEnv)
         }
         envMap["ZALITH_VERSION_CODE"] = BuildConfig.VERSION_CODE.toString()
 
@@ -239,7 +241,7 @@ class GameLauncher(
     override fun progressFinalUserArgs(args: MutableList<String>, ramAllocation: Int) {
         super.progressFinalUserArgs(args, version.getRamAllocation(activity))
         if (Renderers.isCurrentRendererValid()) {
-            args.add("-Dorg.lwjgl.opengl.libname=${getRendererLibrary()}")
+            args.add("-Dorg.lwjgl.opengl.libname=${getGameRendererLibrary(version)}")
         }
     }
 
@@ -450,7 +452,8 @@ private fun checkAndUsedJSPH(envMap: MutableMap<String, String>, runtime: Runtim
 
 private fun setRendererEnv(
     envMap: MutableMap<String, String>,
-    configuredRendererEnv: Map<String, String>?
+    version: Version,
+    configuredRendererEnv: Map<String, String>?,
 ) {
     val renderer = Renderers.getCurrentRenderer()
     val rendererId = renderer.getRendererId()
@@ -494,6 +497,19 @@ private fun setRendererEnv(
 
     envMap["POJAV_RENDERER"] = rendererId
 
+    if (isSfpewEnabledFor(renderer, version)) {
+        envMap["SFPEW_LAYER"] = "1"
+        envMap["SFPEW_EGL"] = envMap["SDL_EGL_LIBRARY"]
+            ?: envMap["POJAVEXEC_EGL"]
+            ?: "libEGL.so"
+        if (AllSettings.sfpewRelaxedContext.getValue()) {
+            envMap["SFPEW_RELAXED_CONTEXT"] = "1"
+        }
+        val sfpewLibraryPath = getSfpewLibraryPath()
+        envMap["SDL_OPENGL_LIBRARY"] = sfpewLibraryPath
+        envMap["SDL_EGL_LIBRARY"] = sfpewLibraryPath
+    }
+
     if (RendererPluginManager.selectedRendererPlugin != null) return
 
     if (!renderer.mesaBased) {
@@ -527,6 +543,16 @@ private fun setRendererEnv(
 private fun getRendererLibrary(): String? {
     return if (!Renderers.isCurrentRendererValid()) null
     else Renderers.getCurrentRenderer().getRendererLibrary()
+}
+
+private fun getGameRendererLibrary(version: Version): String? {
+    if (!Renderers.isCurrentRendererValid()) return null
+    val renderer = Renderers.getCurrentRenderer()
+    return if (isSfpewEnabledFor(renderer, version)) {
+        getSfpewLibraryPath()
+    } else {
+        renderer.getRendererLibrary()
+    }
 }
 
 /**

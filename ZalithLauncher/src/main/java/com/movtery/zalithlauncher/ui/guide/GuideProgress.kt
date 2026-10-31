@@ -59,6 +59,13 @@ object GuideProgress {
     }
 
     /**
+     * @return 该组引导是否已播放过当前版本
+     */
+    fun isPlayed(group: GuideKeys.Keys): Boolean {
+        return playedVersion(group) >= group.version
+    }
+
+    /**
      * 标记该组引导已经播放到指定版本
      */
     fun markPlayed(group: GuideKeys.Keys, version: Int) {
