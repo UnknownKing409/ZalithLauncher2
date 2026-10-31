@@ -47,6 +47,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.movtery.zalithlauncher.R
+import com.movtery.zalithlauncher.game.plugin.Plugin
 import com.movtery.zalithlauncher.game.plugin.driver.Driver
 import com.movtery.zalithlauncher.game.plugin.driver.DriverPluginManager
 import com.movtery.zalithlauncher.game.renderer.ConfigurableRenderer
@@ -168,6 +169,22 @@ fun RendererSettingsScreen(
                             onDismissRequest = { showConfigDialog = false }
                         )
                     }
+
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
+                        unit = AllSettings.sfpewPluginLayer,
+                        title = stringResource(R.string.settings_renderer_sfpew_plugin_layer_title),
+                        summary = stringResource(R.string.settings_renderer_sfpew_plugin_layer_summary)
+                    )
+
+                    SwitchSettingsCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        position = CardPosition.Middle,
+                        unit = AllSettings.sfpewRelaxedContext,
+                        title = stringResource(R.string.renderer_config_sfpew_relaxed_context_title),
+                        summary = stringResource(R.string.renderer_config_sfpew_relaxed_context_desc)
+                    )
 
                     ListSettingsCard(
                         modifier = Modifier.fillMaxWidth(),
@@ -385,13 +402,20 @@ fun RendererSummaryLayout(renderer: RendererInterface) {
             val minVer = getDisplayMinMCVersion()
             val maxVer = getDisplayMaxMCVersion()
 
-            if (minVer != null || maxVer != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(text = stringResource(R.string.renderer_version_support), style = MaterialTheme.typography.labelSmall)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(text = stringResource(R.string.renderer_version_support), style = MaterialTheme.typography.labelSmall)
 
+                if (minVer == null && maxVer == null) {
+                    Text(
+                        text = stringResource(
+                            if (renderer is Plugin) R.string.generic_unknown else R.string.renderer_version_all
+                        ),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                } else {
                     minVer?.let {
                         Text(text = ">= $it", style = MaterialTheme.typography.labelSmall)
                     }

@@ -20,6 +20,16 @@ static const char* g_LogTag = "GLBridge";
 static __thread gl_render_window_t* currentBundle;
 static EGLDisplay g_EglDisplay;
 
+static EGLBoolean bridge_eglMakeCurrent(EGLDisplay dpy, EGLSurface draw, EGLSurface read, EGLContext ctx) {
+    if (sfpew_eglMakeCurrent_p != NULL) return sfpew_eglMakeCurrent_p(dpy, draw, read, ctx);
+    return eglMakeCurrent_p(dpy, draw, read, ctx);
+}
+
+static EGLBoolean bridge_eglSwapBuffers(EGLDisplay dpy, EGLSurface draw) {
+    if (sfpew_eglSwapBuffers_p != NULL) return sfpew_eglSwapBuffers_p(dpy, draw);
+    return eglSwapBuffers_p(dpy, draw);
+}
+
 bool gl_init() {
     dlsym_EGL();
     g_EglDisplay = eglGetDisplay_p(EGL_DEFAULT_DISPLAY);
@@ -174,7 +184,7 @@ void gl_make_current(gl_render_window_t* bundle) {
 
     if (bundle == NULL)
     {
-        if (eglMakeCurrent_p(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
+        if (bridge_eglMakeCurrent(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT))
         {
             currentBundle = NULL;
         }
@@ -193,7 +203,7 @@ void gl_make_current(gl_render_window_t* bundle) {
     if (bundle->surface == NULL)
         gl_swap_surface(bundle);
 
-    if (eglMakeCurrent_p(g_EglDisplay, bundle->surface, bundle->surface, bundle->context))
+    if (bridge_eglMakeCurrent(g_EglDisplay, bundle->surface, bundle->surface, bundle->context))
     {
         currentBundle = bundle;
     } else {
@@ -211,19 +221,19 @@ void gl_make_current(gl_render_window_t* bundle) {
 void gl_swap_buffers() {
     if (currentBundle->state == STATE_RENDERER_NEW_WINDOW)
     {
-        eglMakeCurrent_p(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        bridge_eglMakeCurrent(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
         gl_swap_surface(currentBundle);
-        eglMakeCurrent_p(g_EglDisplay, currentBundle->surface, currentBundle->surface, currentBundle->context);
+        bridge_eglMakeCurrent(g_EglDisplay, currentBundle->surface, currentBundle->surface, currentBundle->context);
         currentBundle->state = STATE_RENDERER_ALIVE;
     }
 
     if (currentBundle->surface != NULL)
-        if (!eglSwapBuffers_p(g_EglDisplay, currentBundle->surface) && eglGetError_p() == EGL_BAD_SURFACE)
+        if (!bridge_eglSwapBuffers(g_EglDisplay, currentBundle->surface) && eglGetError_p() == EGL_BAD_SURFACE)
         {
-            eglMakeCurrent_p(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+            bridge_eglMakeCurrent(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
             currentBundle->newNativeSurface = NULL;
             gl_swap_surface(currentBundle);
-            eglMakeCurrent_p(g_EglDisplay, currentBundle->surface, currentBundle->surface, currentBundle->context);
+            bridge_eglMakeCurrent(g_EglDisplay, currentBundle->surface, currentBundle->surface, currentBundle->context);
             // 清理过期状态，避免下一帧重复进入 gl_swap_surface 导致回退到 1×1 pbuffer
             if (currentBundle->nativeSurface != NULL && currentBundle->state == STATE_RENDERER_NEW_WINDOW) {
                 currentBundle->state = STATE_RENDERER_ALIVE;
