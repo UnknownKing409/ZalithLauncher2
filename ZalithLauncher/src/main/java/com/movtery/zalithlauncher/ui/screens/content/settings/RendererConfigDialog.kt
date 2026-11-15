@@ -49,6 +49,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.nonInteractiveScrollbar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
@@ -81,6 +82,7 @@ import com.movtery.zalithlauncher.game.renderer.config.TextEntry
 import com.movtery.zalithlauncher.game.renderer.config.VersionRendererConfigStore
 import com.movtery.zalithlauncher.ui.components.DefaultSwitch
 import com.movtery.zalithlauncher.ui.components.ImePanContainer
+import com.movtery.zalithlauncher.ui.components.LittleTextLabel
 import com.movtery.zalithlauncher.ui.components.MarqueeText
 import com.movtery.zalithlauncher.ui.components.OwnOutlinedTextField
 import com.movtery.zalithlauncher.ui.components.SimpleAlertDialog
@@ -125,6 +127,14 @@ fun RendererConfigDialog(
     }
     val session = sessionState.value ?: return
     var showResetDialog by remember { mutableStateOf(false) }
+
+    DisposableEffect(session) {
+        onDispose {
+            if (session.isModified()) {
+                session.save()
+            }
+        }
+    }
 
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -293,16 +303,15 @@ private fun SwitchConfigItem(state: ConfigEntryState, position: CardPosition) {
                 .clickable { state.saveValue(ConfigScalar.BooleanValue(!checked)) }
                 .padding(all = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             EntryHeader(state, Modifier.weight(1f))
+
+            ResetEntryButton(state)
 
             DefaultSwitch(
                 checked = checked,
                 onCheckedChange = { state.saveValue(ConfigScalar.BooleanValue(it)) }
             )
-
-            ResetEntryButton(state)
         }
     }
 }
@@ -338,13 +347,10 @@ private fun ChoiceConfigItem(state: ConfigEntryState, position: CardPosition) {
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 EntryHeader(state)
-                Text(
-                    modifier = Modifier.alpha(if (enabled) 0.7f else 0.38f),
-                    text = stringResource(
-                        R.string.settings_element_selected,
-                        selected?.label?.resolve() ?: state.value.asString()
-                    ),
-                    style = MaterialTheme.typography.labelSmall
+                LittleTextLabel(
+                    modifier = Modifier.alpha(if (enabled) 1f else 0.38f),
+                    text = selected?.label?.resolve() ?: state.value.asString(),
+                    textStyle = MaterialTheme.typography.labelSmall,
                 )
             }
 

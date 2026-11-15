@@ -1,6 +1,7 @@
 package com.movtery.guide
 
 import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.Dp
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,8 +37,9 @@ internal object GuideHub {
 class GuideController internal constructor(
     internal val entries: List<GuideEntry>,
     internal val colors: GuideColors,
-    internal val holeRadius: Dp,
+    internal val holeShape: Shape,
     internal val holeBorderWidth: Dp,
+    internal val shape: Shape,
     internal val backBehavior: GuideBack
 ) {
     private val _state = MutableStateFlow<GuideState>(GuideState.Idle)
